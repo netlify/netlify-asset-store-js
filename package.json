@@ -1,0 +1,27 @@
+{
+  "name": "netlify-asset-store-js",
+  "version": "0.1.0",
+  "description": "Netlify Asset Store client for JavaScript",
+  "main": "lib/index.js",
+  "scripts": {
+    "compile": "babel --presets es2015 --plugins syntax-object-rest-spread,transform-object-rest-spread -d lib/ src/",
+    "prepublish": "npm run compile",
+    "version": "npm run babelify && git add browser/netlify-asset-store.js",
+    "babelify": "browserify src/index.js -t [ babelify --presets [ es2015 ] --plugins syntax-object-rest-spread,transform-object-rest-spread ] | uglifyjs > browser/netlify-asset-store.js"
+  },
+  "author": "David Calavera",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "uglify-js": "^2.6.2"
+  },
+  "dependencies": {
+    "micro-api-client": "^2.0.0",
+    "prettier": "^1.6.1"
+  }
+}

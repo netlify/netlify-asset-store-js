@@ -5,15 +5,6 @@ export default class NetlifyAssetsStore {
     this.api = new API(url);
     this.token = token;
   }
-  
-  _request(path, options = {}) {
-    options.headers = options.headers || {};
-    if (this.token) {
-      options.headers["Authoriztion"] = `Bearer ${ this.token }`;
-    }
-
-    return this.api.request(path, options);
-  }
 
   create(file, privateAsset = false) {
     const data = {
@@ -69,19 +60,36 @@ export default class NetlifyAssetsStore {
     }
 
     return fetch(form.url, options)
-      .then(confirmUload(asset.id))
+      .then(confirmUpload(asset.uploaded_url))
       .then({asset});
   }
 
   // PRIVATE
   // confirmUpload tells the API that the signed upload completed successfully.
-  confirmUpload(assetID) {
+  confirmUpload(uploadedUrl) {
     const options = {
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify({state: "uploaded"})
     };
 
-    return this._request(`/${ assetID }`, options);
+    const api = new API(uploadedUrl);
+    return this._sendRequest(api, "/", options);
   }
 
+  // PRIVATE
+  // _request sends requests to the API.
+  _request(path, options = {}) {
+    return _sendRequest(this.api, path, options);
+  }
+
+  // PRIVATE
+  // _sendRequest uses an API endpoint to send requests.
+  _sendRequest(api, path, options) {
+    options.headers = options.headers || {};
+    if (this.token) {
+      options.headers["Authoriztion"] = `Bearer ${ this.token }`;
+    }
+
+    return api.request(path, options);
+  }
 }
